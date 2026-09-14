@@ -1,0 +1,247 @@
+{
+  "name": "data capture workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        0,
+        -144
+      ],
+      "id": "2c902f39-fd29-44e3-beb8-4414f6e6be36",
+      "name": "Telegram Trigger",
+      "webhookId": "5e804524-b0a2-449e-8ad5-eb073e66522c",
+      "credentials": {
+        "telegramApi": {
+          "id": "Q0HtsKOGaTPFdFhZ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c37083b1-2b88-4cd0-8297-73804f8fd06d",
+              "name": "name",
+              "value": "={{ $json.message.chat.first_name }}",
+              "type": "string"
+            },
+            {
+              "id": "b215e021-40dd-4963-8300-171ea78cbdff",
+              "name": "id",
+              "value": "={{ $json.message.chat.id }}",
+              "type": "number"
+            },
+            {
+              "id": "be95b45e-45ce-441e-8bde-bfc0576f075b",
+              "name": "message",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        224,
+        -144
+      ],
+      "id": "91f2fd94-413d-4e97-8c5e-89bfb6059fdb",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1p5RnPZ1JFd-GfyCXQPryXbPG7ZDd5cYzghPX3TkjSz0",
+          "mode": "list",
+          "cachedResultName": "lead capture sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1p5RnPZ1JFd-GfyCXQPryXbPG7ZDd5cYzghPX3TkjSz0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1305173824,
+          "mode": "list",
+          "cachedResultName": "normal customers",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1p5RnPZ1JFd-GfyCXQPryXbPG7ZDd5cYzghPX3TkjSz0/edit#gid=1305173824"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "name": "={{ $json.name }}",
+            "email": "aabdimalik09@gmail.com",
+            "phone number": "0743290837"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "phone number",
+              "displayName": "phone number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        448,
+        -144
+      ],
+      "id": "a09f4de9-9f8b-42c5-ba9a-28823d06a07b",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "U2Yrd5qmEBC48fUz",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "hello",
+        "emailType": "text",
+        "message": "={{ $('Edit Fields').item.json.message }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        672,
+        -144
+      ],
+      "id": "617601c2-f051-4cb8-8fab-8f2b8a4572af",
+      "name": "Send a message",
+      "webhookId": "bc87d41f-fa34-42cc-b8b4-3129a535a7af",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "pWiPlzOMMglMuPyo",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Edit Fields').item.json.id }}",
+        "text": "your message has been received",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        896,
+        -144
+      ],
+      "id": "0a3d0ba2-c6e7-4f99-8433-fa34282dd3d7",
+      "name": "Send a text message",
+      "webhookId": "19c712bd-1fb2-48c5-a4c5-4aa88154412b",
+      "credentials": {
+        "telegramApi": {
+          "id": "Q0HtsKOGaTPFdFhZ",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "167551bb-a098-4c83-b79f-acce275f2927",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "74a6c9e96b56821c0e3b551aca77124f0bf0175b5a3d8a5279d27714491cdc4b"
+  },
+  "nodeGroups": [],
+  "id": "jpb04tJl0i5XwQZw",
+  "tags": []
+}
